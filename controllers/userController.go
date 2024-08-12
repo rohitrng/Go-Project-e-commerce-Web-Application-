@@ -64,5 +64,6 @@ func Logindata(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "login successfuly"})
+	// c.JSON(http.StatusOK, gin.H{"message": "login successfuly"})
+	c.Redirect(http.StatusFound, "user/products")
 }

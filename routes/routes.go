@@ -11,4 +11,10 @@ func SetupRoutes(r *gin.Engine) {
 	r.POST("/register", controllers.Registerdata)
 	r.GET("/login", controllers.ShowLoginPage)
 	r.POST("/login", controllers.Logindata)
+
+	auth := r.Group("user")
+	auth.Use()
+	{
+		auth.GET("products", controllers.ShowProductPage)
+	}
 }
