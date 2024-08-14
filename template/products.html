@@ -47,7 +47,11 @@
                     <td>{{.Name}}</td>
                     <td>{{.Description}}</td>
                     <td>{{.Price}}</td>
-                    <td>Add To Cart</td>
+                    <td>
+                      <form action="/user/cart/add/{{.ID}}" method="post">
+                        <input type="submit" class="btn btn-success" value="Add To Cart">
+                      </form>
+                      </td>
                   </tr>
                   {{end}}
                 </tbody>

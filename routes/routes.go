@@ -16,5 +16,6 @@ func SetupRoutes(r *gin.Engine) {
 	auth.Use()
 	{
 		auth.GET("products", controllers.ShowProductPage)
+		auth.POST("/cart/add/:id", controllers.AddToCart)
 	}
 }

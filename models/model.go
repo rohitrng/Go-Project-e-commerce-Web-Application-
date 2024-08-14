@@ -13,3 +13,12 @@ type Products struct {
 	Description string
 	Price       int `gorm:"not null"`
 }
+
+type Cart struct {
+	ID        uint     `gorm:"primary_key"`
+	UserID    uint     `gorm:"not null"`
+	ProductID uint     `gorm:"not null"`
+	Quantity  int      `gorm:"default:1"`
+	Product   Products `gorm:"foreignKey:ProductID"`
+	Price     int
+}
