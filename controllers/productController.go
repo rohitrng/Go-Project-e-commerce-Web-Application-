@@ -66,5 +66,23 @@ func AddToCart(c *gin.Context) {
 		cart.Price = product.Price
 		models.DB.Save(&cart)
 	}
-	c.JSON(http.StatusAccepted, gin.H{"message": cart})
+	// c.JSON(http.StatusAccepted, gin.H{"message": cart})
+	c.Redirect(http.StatusFound, "/user/cart")
+}
+
+func CetCart(c *gin.Context) {
+	session := sessions.Default(c)
+	userID := session.Get("user_id")
+	if userID == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please Login first"})
+		return
+	}
+
+	var cartitems []models.Cart
+	if err := models.DB.Preload("Product").Where("user_id = ?", userID).Find(&cartitems).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Faied to fetch cart items"})
+		return
+	}
+
+	c.HTML(http.StatusOK, "cart.html", gin.H{"cartitems": cartitems})
 }
