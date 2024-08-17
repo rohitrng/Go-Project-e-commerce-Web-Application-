@@ -22,3 +22,19 @@ type Cart struct {
 	Product   Products `gorm:"foreignKey:ProductID"`
 	Price     int
 }
+
+type CartItem struct {
+	ID        uint     `json:"cart_id"`
+	UserID    uint     `json:"user_id"`
+	ProductID uint     `json:"product_id"`
+	Quantity  int      `json:"quantity"`
+	Product   Products `json:"product_name"`
+	Price     int      `json:"price"`
+}
+
+type Order struct {
+	ID     uint `gorm:"primaryKey"`
+	UserID uint `gorm:"not null"`
+	Total  int  `gorm:"not null"`
+	User   User
+}

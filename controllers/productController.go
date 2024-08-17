@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"ecommerce/models"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -85,4 +86,40 @@ func CetCart(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "cart.html", gin.H{"cartitems": cartitems})
+}
+
+func PlaceOrder(c *gin.Context) {
+	session := sessions.Default(c)
+	userId, ok := session.Get("user_id").(uint)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Please Login First"})
+		return
+	}
+
+	var cartitems []models.CartItem
+	if err := models.DB.Table("carts").Select("carts.id as cart_id, carts.user_id,carts.product_id,carts.quantity,products.name as product_name , products.price").Joins("left join products on products.id = carts.product_id").Where("user_id = ?", userId).Scan(&cartitems).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch cart item"})
+		return
+	}
+
+	log.Println("cart Items", cartitems)
+
+	var total int
+	for _, item := range cartitems {
+		if item.ProductID == 0 || item.Price == 0 {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid Product details"})
+			return
+		}
+		total += int(item.Quantity) * item.Price
+	}
+
+	order := models.Order{
+		UserID: userId,
+		Total:  total,
+	}
+	if err := models.DB.Create(&order).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create Order"})
+		return
+	}
+
 }
