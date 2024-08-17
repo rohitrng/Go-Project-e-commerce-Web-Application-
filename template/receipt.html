@@ -21,7 +21,7 @@
             </ul>
             <!-- <form class="d-flex" role="search"> -->
                 <!-- <li class="nav-item"> -->
-                    <a href="logout" class="nav-link disabled" aria-disabled="true">Logout</a>
+                    <a href="/logout" class="nav-link" aria-disabled="true">Logout</a>
                   <!-- </li> -->
             <!-- </form> -->
           </div>
@@ -30,40 +30,34 @@
     </div>
     <body >
         <div class="container">
+            <h1>Order Receipt</h1>
+            <p>Thank you for your Order!</p>
+            <h2>Order Summary</h2>
             <table class="table">
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Description</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Quantity</th>
                     <th scope="col">Price</th>
-                    <th scope="col">Action</th>
+                    <th scope="col">Total</th>
                   </tr>
                 </thead>
                 <tbody>
-                    {{range .products}}
+                    {{range .cartItems}}
                   <tr>
-                    <th scope="row">1</th>
-                    <td>{{.Name}}</td>
-                    <td>{{.Description}}</td>
+                    <!-- <th scope="row">1</th> -->
+                    <td>{{.ProductName}}</td>
+                    <td>{{.Quantity}}</td>
                     <td>{{.Price}}</td>
-                    <td>
-                      <form action="/user/cart/add/{{.ID}}" method="post">
-                        <input type="submit" class="btn btn-success" value="Add To Cart">
-                      </form>
-                      </td>
+                    <td>{{.Quantity | mul .Price}}</td>
                   </tr>
                   {{end}}
+                  <tr>
+                    <td colspan="3">Total</td>
+                    <td>${{.order.Total}}</td>
+                  </tr>
                 </tbody>
               </table>
         </div>
     </body>
 </html>
-
-
-
-
-
-
-
-

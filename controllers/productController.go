@@ -97,8 +97,12 @@ func PlaceOrder(c *gin.Context) {
 	}
 
 	var cartitems []models.CartItem
-	if err := models.DB.Table("carts").Select("carts.id as cart_id, carts.user_id,carts.product_id,carts.quantity,products.name as product_name , products.price").Joins("left join products on products.id = carts.product_id").Where("user_id = ?", userId).Scan(&cartitems).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch cart item"})
+	if err := models.DB.Table("carts").
+		Select("carts.id as cart_id, carts.user_id, carts.product_id, carts.quantity, products.name as product_name, products.price").
+		Joins("left join products on products.id = carts.product_id").
+		Where("carts.user_id = ?", userId).
+		Scan(&cartitems).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch cart items"})
 		return
 	}
 
@@ -122,4 +126,26 @@ func PlaceOrder(c *gin.Context) {
 		return
 	}
 
+	for _, item := range cartitems {
+		orderItem := models.OrderItem{
+			OrderID:   order.ID,
+			ProductID: item.ProductID,
+			Quantity:  item.Quantity,
+			Price:     item.Price,
+		}
+		if err := models.DB.Create(&orderItem).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create order item"})
+			return
+		}
+	}
+
+	// Clear the Cart
+	if err := models.DB.Where("user_id = ?", userId).Delete(&models.Cart{}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to clear cart"})
+		return
+	}
+	c.HTML(http.StatusOK, "receipt.html", gin.H{
+		"order":     order,
+		"cartItems": cartitems,
+	})
 }

@@ -67,3 +67,10 @@ func Logindata(c *gin.Context) {
 	// c.JSON(http.StatusOK, gin.H{"message": "login successfuly"})
 	c.Redirect(http.StatusFound, "user/products")
 }
+
+func LogoutUser(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
+	c.Redirect(http.StatusFound, "/login")
+}

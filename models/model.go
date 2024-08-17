@@ -24,12 +24,12 @@ type Cart struct {
 }
 
 type CartItem struct {
-	ID        uint     `json:"cart_id"`
-	UserID    uint     `json:"user_id"`
-	ProductID uint     `json:"product_id"`
-	Quantity  int      `json:"quantity"`
-	Product   Products `json:"product_name"`
-	Price     int      `json:"price"`
+	ID          uint   `json:"cart_id"`
+	UserID      uint   `json:"user_id"`
+	ProductID   uint   `json:"product_id"`
+	Quantity    int    `json:"quantity"`
+	ProductName string `json:"product_name"`
+	Price       int    `json:"price"`
 }
 
 type Order struct {
@@ -37,4 +37,14 @@ type Order struct {
 	UserID uint `gorm:"not null"`
 	Total  int  `gorm:"not null"`
 	User   User
+}
+
+type OrderItem struct {
+	ID        uint `gorm:"primaryKey"`
+	OrderID   uint `gorm:"not null"`
+	ProductID uint `gorm:"not null"`
+	Quantity  int  `gorm:"not null"`
+	Price     int  `gorm:"not null"`
+	Order     Order
+	Product   Products
 }

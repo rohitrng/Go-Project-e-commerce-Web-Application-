@@ -21,7 +21,7 @@
             </ul>
             <!-- <form class="d-flex" role="search"> -->
                 <!-- <li class="nav-item"> -->
-                    <a class="nav-link disabled" aria-disabled="true">Logout</a>
+                    <a href="logout" class="nav-link disabled" aria-disabled="true">Logout</a>
                   <!-- </li> -->
             <!-- </form> -->
           </div>
@@ -45,10 +45,10 @@
                     <th scope="row">1</th>
                     <td>{{.Product.Name}}</td>
                     <td>{{.Quantity}}</td>
-                    <td>{{.Quantity}} || {{.Price}}</td>
+                    <td>{{.Quantity | mul .Price}}</td>
                   </tr>
                   {{end}}
-                  <a href="/user/order">Place Order</a>
+                  <a href="/user/order" class="btn btn-primary">Place Order</a>
                 </tbody>
               </table>
         </div>
